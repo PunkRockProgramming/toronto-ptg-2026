@@ -446,6 +446,7 @@
     <h2><span class="icon">🗺</span> Map</h2>
     <div id="leaflet-map"></div>
     <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#50c878;"></div> Home base</div>
       <div class="legend-item"><div class="legend-dot" style="background:#e05050;"></div> Festival venues</div>
       <div class="legend-item"><div class="legend-dot" style="background:#c9a84c;"></div> Food</div>
       <div class="legend-item"><div class="legend-dot" style="background:#7b68ee;"></div> Shops</div>
@@ -715,6 +716,17 @@
   <section id="venues">
     <h2><span class="icon">📍</span> Festival Venues</h2>
     <p style="font-size:0.85rem; color:#666; margin-bottom:1.25rem;">All venues are in or near the Annex neighborhood — most are walkable from each other in under 10 minutes.</p>
+    <h3>Home Base</h3>
+    <div class="venue-grid" style="margin-bottom:1.25rem;">
+      <div class="venue-card" style="border-color:#3a2a00;">
+        <div class="v-name" style="color:#c9a84c;">Airbnb</div>
+        <div class="v-addr">755 Palmerston Ave, Toronto ON M6G 2R3</div>
+        <div class="v-note">In the Annex — walking distance to all festival venues.</div>
+        <a href="https://maps.google.com/?q=755+Palmerston+Ave+Toronto+ON" target="_blank">📍 View on Google Maps</a>
+      </div>
+    </div>
+
+    <h3>Festival Venues</h3>
     <div class="venue-grid">
       <div class="venue-card">
         <div class="v-name">Trinity St. Paul's Church</div>
@@ -883,7 +895,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-  const map = L.map('leaflet-map').setView([43.6640, -79.4120], 14);
+  const map = L.map('leaflet-map').setView([43.6630, -79.4150], 14);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
@@ -905,6 +917,18 @@
       popupAnchor: [0, -10]
     });
   }
+
+  // Airbnb (home base)
+  L.marker([43.6593, -79.4192], { icon: makeIcon('#50c878') })
+    .addTo(map)
+    .bindPopup(`
+      <div style="font-family: -apple-system, sans-serif; min-width: 160px;">
+        <strong style="font-size: 0.9rem; display:block; margin-bottom:2px;">🏠 Airbnb — Home Base</strong>
+        <span style="font-size: 0.75rem; color: #888; display:block; margin-bottom:4px;">755 Palmerston Ave, M6G 2R3</span>
+        <span style="font-size: 0.78rem; color: #555;">Walking distance to all festival venues.</span>
+        <br><a href="https://maps.google.com/?q=755+Palmerston+Ave+Toronto+ON" target="_blank" style="font-size:0.72rem; color:#c9a84c; margin-top:4px; display:inline-block;">Open in Google Maps →</a>
+      </div>
+    `, { maxWidth: 220 });
 
   const venues = [
     {
