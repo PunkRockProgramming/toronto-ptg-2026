@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toronto – Prepare the Ground 2026</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #e0d8cc;
+      line-height: 1.6;
+    }
+
+    .hero {
+      background: linear-gradient(160deg, #1a0a0a 0%, #0f0f0f 60%);
+      border-bottom: 1px solid #2a2020;
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1.05rem;
+      color: #9a8e7e;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .meta-pill {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 99px;
+      padding: 0.3rem 0.85rem;
+      color: #b8a88e;
+    }
+
+    nav {
+      background: #141414;
+      border-bottom: 1px solid #222;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    nav a {
+      color: #888;
+      text-decoration: none;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    nav a:hover {
+      color: #e0d8cc;
+      border-bottom-color: #8a3a3a;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h2 .icon { font-size: 1.1rem; }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #c9a84c;
+      margin: 1.5rem 0 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+    }
+
+    /* Schedule */
+
+    .day-block {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .day-header {
+      background: #1a1a1a;
+      padding: 0.75rem 1.1rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      border-bottom: 1px solid #252525;
+    }
+
+    .day-header .day-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .day-header .day-date {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .venue-section {
+      padding: 0.5rem 0;
+    }
+
+    .venue-label {
+      padding: 0.3rem 1.1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #555;
+    }
+
+    .show-row {
+      display: flex;
+      align-items: center;
+      padding: 0.4rem 1.1rem;
+      gap: 1rem;
+      border-radius: 4px;
+      margin: 0 0.5rem;
+      transition: background 0.1s;
+    }
+
+    .show-row:hover { background: #1c1c1c; }
+
+    .show-time {
+      font-size: 0.75rem;
+      color: #666;
+      min-width: 100px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .show-name {
+      font-size: 0.9rem;
+      color: #d8d0c0;
+      flex: 1;
+    }
+
+    .show-row.anchor .show-name {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .show-row.anchor .show-name::after {
+      content: attr(data-note);
+      display: inline-block;
+      margin-left: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: #8a6e2a;
+      background: #1e1600;
+      border: 1px solid #3a2a00;
+      border-radius: 99px;
+      padding: 0.1rem 0.5rem;
+      vertical-align: middle;
+    }
+
+    .venue-divider {
+      height: 1px;
+      background: #1e1e1e;
+      margin: 0.5rem 0;
+    }
+
+    /* Map */
+
+    #map-section {
+      background: #0f0f0f;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    #map-section .map-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 0;
+    }
+
+    #map-section h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #leaflet-map {
+      width: 100%;
+      height: 420px;
+      border-radius: 8px;
+      border: 1px solid #222;
+      margin-bottom: 0.75rem;
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-bottom: 1.5rem;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Map + place cards */
+
+    .places-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .place-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .place-card:hover {
+      border-color: #3a2a00;
+      background: #161410;
+    }
+
+    .place-card .place-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #e0d8cc;
+      margin-bottom: 0.2rem;
+    }
+
+    .place-card .place-desc {
+      font-size: 0.78rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .place-card .map-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      color: #8a6e2a;
+      text-decoration: none;
+    }
+
+    /* Venue reference */
+
+    .venue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .venue-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+
+    .venue-card .v-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+
+    .venue-card .v-addr {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 0.4rem;
+    }
+
+    .venue-card .v-note {
+      font-size: 0.72rem;
+      color: #9a8e7e;
+    }
+
+    .venue-card a {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      color: #8a6e2a;
+      text-decoration: none;
+    }
+
+    /* Tips */
+    .tips-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tips-list li {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      font-size: 0.85rem;
+      color: #b8a88e;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+    }
+
+    .tips-list li .tip-icon { flex-shrink: 0; }
+
+    /* Matt plan callout */
+    .plan-callout {
+      background: #130f00;
+      border: 1px solid #3a2a00;
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .plan-callout .plan-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #8a6e2a;
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-callout .plan-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .plan-callout .plan-items li {
+      font-size: 0.85rem;
+      color: #c9a84c;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .plan-callout .plan-items li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #5a4a1a;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: #444;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    @media (max-width: 500px) {
+      .show-time { min-width: 80px; font-size: 0.7rem; }
+      .show-name { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Prepare the Ground 2026</h1>
+  <p class="subtitle">Toronto, Ontario · Trinity St. Paul's, Lee's Palace, The Cave, Tranzac</p>
+  <div class="meta">
+    <span class="meta-pill">May 29–31, 2026</span>
+    <span class="meta-pill">The Annex neighborhood</span>
+    <span class="meta-pill">19+ at most venues</span>
+    <span class="meta-pill">Walking festival</span>
+  </div>
+</div>
+
+<nav>
+  <a href="#schedule">Schedule</a>
+  <a href="#venues">Venues</a>
+  <a href="#food">Food</a>
+  <a href="#shops">Shops</a>
+  <a href="#art">Art</a>
+  <a href="#tips">Tips</a>
+</nav>
+
+<div id="map-section">
+  <div class="map-inner">
+    <h2><span class="icon">🗺</span> Map</h2>
+    <div id="leaflet-map"></div>
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#e05050;"></div> Festival venues</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c9a84c;"></div> Food</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7b68ee;"></div> Shops</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4a9eca;"></div> Art</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SCHEDULE -->
+  <section id="schedule">
+    <h2><span class="icon">🗓</span> Full Schedule</h2>
+
+    <!-- FRIDAY -->
+    <div class="day-block">
+      <div class="day-header">
+        <span class="day-name">Friday</span>
+        <span class="day-date">May 29, 2026</span>
+      </div>
+
+      <div class="venue-section">
+        <div class="venue-label">Trinity St. Paul's Church</div>
+        <div class="show-row anchor">
+          <span class="show-time">9:15 – 10:15 PM</span>
+          <span class="show-name" data-note="✦ anchor">Amenra</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Lee's Palace</div>
+        <div class="show-row">
+          <span class="show-time">6:00 – 6:45 PM</span>
+          <span class="show-name">Blood Ceremony</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">7:30 – 8:30 PM</span>
+          <span class="show-name">Mizmor</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">10:15 – 11:15 PM</span>
+          <span class="show-name">Yellow Eyes</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">12:00 – 1:00 AM</span>
+          <span class="show-name">Witch Club Satan</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">The Cave</div>
+        <div class="show-row">
+          <span class="show-time">5:15 – 6:00 PM</span>
+          <span class="show-name">Lowheaven</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">6:45 – 7:30 PM</span>
+          <span class="show-name">Minsk</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:30 – 9:15 PM</span>
+          <span class="show-name">Blood Vulture</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">11:15 PM – 12:00 AM</span>
+          <span class="show-name">Conjurer</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Tranzac</div>
+        <div class="show-row">
+          <span class="show-time">5:45 – 6:30 PM</span>
+          <span class="show-name">UUGGHH</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">7:15 – 8:00 PM</span>
+          <span class="show-name">Pretty</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:45 – 9:30 PM</span>
+          <span class="show-name">Indian Handcrafts</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">10:15 – 11:15 PM</span>
+          <span class="show-name">Final Gasp</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SATURDAY -->
+    <div class="day-block">
+      <div class="day-header">
+        <span class="day-name">Saturday</span>
+        <span class="day-date">May 30, 2026</span>
+      </div>
+
+      <div class="venue-section">
+        <div class="venue-label">Trinity St. Paul's Church</div>
+        <div class="show-row anchor">
+          <span class="show-time">6:30 – 7:30 PM</span>
+          <span class="show-name" data-note="Foundations of Burden in full">Pallbearer</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">9:15 – 10:30 PM</span>
+          <span class="show-name">Oranssi Pazuzu</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Lee's Palace</div>
+        <div class="show-row anchor">
+          <span class="show-time">5:30 – 6:30 PM</span>
+          <span class="show-name" data-note="quiet set">Amenra</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">7:15 – 8:15 PM</span>
+          <span class="show-name">Svalbard</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">9:00 – 10:00 PM</span>
+          <span class="show-name">Portrayal of Guilt</span>
+        </div>
+        <div class="show-row anchor">
+          <span class="show-time">11:15 PM – 12:15 AM</span>
+          <span class="show-name" data-note="Rheia in full">Oathbreaker</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">The Cave</div>
+        <div class="show-row">
+          <span class="show-time">6:30 – 7:15 PM</span>
+          <span class="show-name">Wayfarer</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:15 – 9:00 PM</span>
+          <span class="show-name">Malevich</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">10:15 – 11:15 PM</span>
+          <span class="show-name">Tómarúm</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Tranzac</div>
+        <div class="show-row">
+          <span class="show-time">5:00 – 5:30 PM</span>
+          <span class="show-name">Dogwhistle</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">6:00 – 6:30 PM</span>
+          <span class="show-name">Cease</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">7:30 – 8:00 PM</span>
+          <span class="show-name">Dear Evangeline</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:45 – 9:15 PM</span>
+          <span class="show-name">Burner</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">11:30 PM – 12:30 AM</span>
+          <span class="show-name">Habak</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUNDAY -->
+    <div class="day-block">
+      <div class="day-header">
+        <span class="day-name">Sunday</span>
+        <span class="day-date">May 31, 2026</span>
+      </div>
+
+      <div class="venue-section">
+        <div class="venue-label">Trinity St. Paul's Church</div>
+        <div class="show-row anchor">
+          <span class="show-time">9:00 – 10:00 PM</span>
+          <span class="show-name" data-note="✦ anchor">William Basinski</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Lee's Palace</div>
+        <div class="show-row">
+          <span class="show-time">5:45 – 6:45 PM</span>
+          <span class="show-name">Hell</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">7:45 – 8:45 PM</span>
+          <span class="show-name">Wiegedood</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">9:45 – 10:45 PM</span>
+          <span class="show-name">Stygian Bough</span>
+        </div>
+        <div class="show-row anchor">
+          <span class="show-time">11:45 PM – 12:45 AM</span>
+          <span class="show-name" data-note="✦ anchor">Torche</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">The Cave</div>
+        <div class="show-row">
+          <span class="show-time">5:00 – 5:45 PM</span>
+          <span class="show-name">Hell is Other People</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">6:45 – 7:45 PM</span>
+          <span class="show-name">Unholy Altar</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:45 – 9:45 PM</span>
+          <span class="show-name">Tribunal</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">10:45 – 11:45 PM</span>
+          <span class="show-name">Wrekmeister Harmonies</span>
+        </div>
+      </div>
+
+      <div class="venue-divider"></div>
+
+      <div class="venue-section">
+        <div class="venue-label">Tranzac</div>
+        <div class="show-row">
+          <span class="show-time">5:00 – 5:45 PM</span>
+          <span class="show-name">Sara Sloan</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">6:30 – 7:15 PM</span>
+          <span class="show-name">Unwell</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">8:00 – 9:00 PM</span>
+          <span class="show-name">Kathryn Mohr</span>
+        </div>
+        <div class="show-row">
+          <span class="show-time">10:15 – 11:15 PM</span>
+          <span class="show-name">The Keening</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VENUES -->
+  <section id="venues">
+    <h2><span class="icon">📍</span> Festival Venues</h2>
+    <p style="font-size:0.85rem; color:#666; margin-bottom:1.25rem;">All venues are in or near the Annex neighborhood — most are walkable from each other in under 10 minutes.</p>
+    <div class="venue-grid">
+      <div class="venue-card">
+        <div class="v-name">Trinity St. Paul's Church</div>
+        <div class="v-addr">427 Bloor St W</div>
+        <div class="v-note">All-ages. Atmospheric sets, best acoustics of the four venues.</div>
+        <a href="https://maps.google.com/?q=Trinity+St+Paul's+Church+427+Bloor+St+W+Toronto" target="_blank">📍 View on Google Maps</a>
+      </div>
+      <div class="venue-card">
+        <div class="v-name">Lee's Palace</div>
+        <div class="v-addr">529 Bloor St W</div>
+        <div class="v-note">19+. Iconic Toronto venue, a short walk west from Trinity.</div>
+        <a href="https://maps.google.com/?q=Lee's+Palace+529+Bloor+St+W+Toronto" target="_blank">📍 View on Google Maps</a>
+      </div>
+      <div class="venue-card">
+        <div class="v-name">Dance Cave</div>
+        <div class="v-addr">529 Bloor St W (upstairs from Lee's)</div>
+        <div class="v-note">19+. Same building as Lee's Palace — two flights up.</div>
+        <a href="https://maps.google.com/?q=Lee's+Palace+529+Bloor+St+W+Toronto" target="_blank">📍 View on Google Maps</a>
+      </div>
+      <div class="venue-card">
+        <div class="v-name">Tranzac Club</div>
+        <div class="v-addr">292 Brunswick Ave</div>
+        <div class="v-note">All-ages. Community venue with a more relaxed feel, one block off Bloor.</div>
+        <a href="https://maps.google.com/?q=Tranzac+Club+292+Brunswick+Ave+Toronto" target="_blank">📍 View on Google Maps</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOD -->
+  <section id="food">
+    <h2><span class="icon">🍜</span> Food</h2>
+    <p style="font-size:0.85rem; color:#666; margin-bottom:1.25rem;">Toronto is an excellent vegan city. These are all either fully vegan or very vegan-friendly.</p>
+
+    <h3>Sit-down / dinner</h3>
+    <div class="places-grid">
+      <a class="place-card" href="https://hawker.to" target="_blank">
+        <div class="place-name">Hawker</div>
+        <div class="place-desc">All-vegan Southeast Asian small plates in Kensington Market. Cool patio, art-y interior. Good pre-show dinner.</div>
+        <span class="map-link">📍 Kensington Market · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://www.plantarestaurants.com" target="_blank">
+        <div class="place-name">PLANTA</div>
+        <div class="place-desc">Upscale all-vegan: creative sushi, dim sum, pasta. Two locations (Queen West & Yorkville). Treat-yourself tier.</div>
+        <span class="map-link">📍 Queen West / Yorkville · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://www.thehogtownvegan.com" target="_blank">
+        <div class="place-name">The Hogtown Vegan</div>
+        <div class="place-desc">Southern comfort food — vegan wings, mac, poutine. Heavy and satisfying pre-show fuel.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://www.ethioeri.com" target="_blank">
+        <div class="place-name">Ethio & Eri Cafe</div>
+        <div class="place-desc">Ethiopian/Eritrean with excellent vegan plates. Good portions, great comfort food.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+    </div>
+
+    <h3>Casual / quick</h3>
+    <div class="places-grid">
+      <a class="place-card" href="https://thealk.com" target="_blank">
+        <div class="place-name">Animal Liberation Kitchen</div>
+        <div class="place-desc">Excellent all-vegan brunch and bowls. Good for a late-morning recharge between days.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://vitallifevegan.ca" target="_blank">
+        <div class="place-name">Vital-Life Vegan</div>
+        <div class="place-desc">Caribbean vegan — jerk bowls, plantain. Casual and highly rated.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://www.vegedelight-toronto.ca" target="_blank">
+        <div class="place-name">VegeDelight</div>
+        <div class="place-desc">Chinese vegetarian with lots of mushroom and tofu dishes. Cozy and central.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- SHOPS -->
+  <section id="shops">
+    <h2><span class="icon">📚</span> Shops Worth Hitting</h2>
+
+    <h3>Bookstores</h3>
+    <div class="places-grid">
+      <a class="place-card" href="http://www.littleghostsbooks.com" target="_blank">
+        <div class="place-name">Little Ghosts Books</div>
+        <div class="place-desc">Horror and speculative fiction focus, with its own café. Very "Toronto goth book nerd."</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="http://balfourbooks.squarespace.com" target="_blank">
+        <div class="place-name">Balfour Books</div>
+        <div class="place-desc">Used and rare on College St. Moody, cozy browsing vibe.</div>
+        <span class="map-link">📍 College St · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://typebooks.ca" target="_blank">
+        <div class="place-name">Type Books</div>
+        <div class="place-desc">Classic Queen West indie bookshop. Good selection, right by Trinity Bellwoods Park.</div>
+        <span class="map-link">📍 Queen West · <span style="text-decoration:underline">maps</span></span>
+      </a>
+    </div>
+
+    <h3>Occult &amp; Witchy</h3>
+    <div class="places-grid">
+      <a class="place-card" href="http://www.theoccultshop.ca" target="_blank">
+        <div class="place-name">The Occult Shop</div>
+        <div class="place-desc">Long-running Toronto occult staple — books, candles, herbs, stones. Classic witch shop energy.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="http://www.thehermitslamp.com" target="_blank">
+        <div class="place-name">The Hermit's Lamp</div>
+        <div class="place-desc">Tarot-heavy metaphysical shop with decks, candles, and classes. Intimate and practitioner-oriented.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="https://queencitycurio.ca" target="_blank">
+        <div class="place-name">Queen City Curio &amp; Apothecary</div>
+        <div class="place-desc">Smaller, very curated witchy/occult space. Good if you want something off the main drag.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="http://www.ramandrebirth.ca" target="_blank">
+        <div class="place-name">Ram &amp; Rebirth</div>
+        <div class="place-desc">Vintage-leaning occult and curiosity shop. Worth a browse.</div>
+        <span class="map-link">📍 Toronto · <span style="text-decoration:underline">maps</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ART -->
+  <section id="art">
+    <h2><span class="icon">🖼</span> Art &amp; Culture</h2>
+    <div class="places-grid">
+      <a class="place-card" href="https://ago.ca" target="_blank">
+        <div class="place-name">Art Gallery of Ontario</div>
+        <div class="place-desc">Big collection worth wandering — Frank Gehry redesign. Easy to do in a few hours between festival days.</div>
+        <span class="map-link">📍 317 Dundas St W · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="http://www.thepowerplant.org" target="_blank">
+        <div class="place-name">The Power Plant</div>
+        <div class="place-desc">Industrial waterfront gallery, contemporary/avant-garde shows. Usually free and compact.</div>
+        <span class="map-link">📍 Harbourfront · <span style="text-decoration:underline">maps</span></span>
+      </a>
+      <a class="place-card" href="http://www.artagallery.ca" target="_blank">
+        <div class="place-name">Distillery District + Arta Gallery</div>
+        <div class="place-desc">Pedestrian historic district with galleries, brick alleys, and patios. Good afternoon wander.</div>
+        <span class="map-link">📍 Distillery District · <span style="text-decoration:underline">maps</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section id="tips">
+    <h2><span class="icon">⚡</span> Practical Notes</h2>
+    <ul class="tips-list">
+      <li><span class="tip-icon">👟</span> <span>Walking festival — all venues are in the Annex or nearby. Comfortable shoes matter more than anything else you pack.</span></li>
+      <li><span class="tip-icon">📱</span> <span>Download the DICE app before you go — your tickets live there. Don't assume you can pull them up in a browser at the door.</span></li>
+      <li><span class="tip-icon">🔞</span> <span>Most venues are 19+. Trinity St. Paul's and Tranzac are all-ages. Bring ID regardless.</span></li>
+      <li><span class="tip-icon">🗺</span> <span>Lee's Palace and Trinity St. Paul's are both on Bloor St W, about a 3-minute walk apart. Tranzac is one block south on Brunswick. Plan your venue hops accordingly.</span></li>
+      <li><span class="tip-icon">🍺</span> <span>Tranzac has its own bar and a more relaxed vibe — good spot to decompress between heavy sets.</span></li>
+      <li><span class="tip-icon">📅</span> <span>Trail of Dead (performing <em>Source Tags & Codes</em> + <em>Secret of Elena's Tomb</em> in full) is listed as Friday but didn't appear in the timetable image at time of writing — double check the schedule on the PTG site before Friday.</span></li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>
+  Prepare the Ground 2026 · Toronto · May 29–31 · <a href="https://www.preparetheground.com" style="color:#555;" target="_blank">preparetheground.com</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+  const map = L.map('leaflet-map').setView([43.6640, -79.4120], 14);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19
+  }).addTo(map);
+
+  function makeIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="
+        width: 14px; height: 14px;
+        background: ${color};
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 50%;
+        box-shadow: 0 0 6px ${color}88;
+      "></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10]
+    });
+  }
+
+  const venues = [
+    {
+      name: "Trinity St. Paul's Church",
+      addr: "427 Bloor St W",
+      note: "All-ages · Best acoustics · Main atmospheric sets",
+      lat: 43.6657, lng: -79.4089,
+      color: '#e05050'
+    },
+    {
+      name: "Lee's Palace + Dance Cave",
+      addr: "529 Bloor St W",
+      note: "19+ · Lee's on main floor, Dance Cave upstairs — same building",
+      lat: 43.6660, lng: -79.4173,
+      color: '#e05050'
+    },
+    {
+      name: "Tranzac Club",
+      addr: "292 Brunswick Ave",
+      note: "All-ages · One block south of Bloor · Community vibe",
+      lat: 43.6641, lng: -79.4107,
+      color: '#e05050'
+    }
+  ];
+
+  const food = [
+    {
+      name: "Hawker",
+      addr: "291 Augusta Ave, Kensington Market",
+      note: "All-vegan SE Asian small plates · Great dinner spot",
+      lat: 43.6553, lng: -79.4065,
+      color: '#c9a84c'
+    },
+    {
+      name: "The Hogtown Vegan",
+      addr: "374 Bloor St W",
+      note: "Southern comfort vegan · wings, mac, poutine",
+      lat: 43.6659, lng: -79.4074,
+      color: '#c9a84c'
+    },
+    {
+      name: "PLANTA (Yorkville)",
+      addr: "1221 Bay St",
+      note: "Upscale all-vegan · sushi, dim sum, pasta",
+      lat: 43.6699, lng: -79.3895,
+      color: '#c9a84c'
+    },
+    {
+      name: "Animal Liberation Kitchen",
+      addr: "Bloor West area",
+      note: "All-vegan brunch + bowls · great late-morning recharge",
+      lat: 43.6658, lng: -79.4215,
+      color: '#c9a84c'
+    }
+  ];
+
+  const shops = [
+    {
+      name: "Little Ghosts Books",
+      addr: "Toronto",
+      note: "Horror + speculative fiction · own café",
+      lat: 43.6538, lng: -79.3801,
+      color: '#7b68ee'
+    },
+    {
+      name: "Balfour Books",
+      addr: "601 Markham St",
+      note: "Used + rare · moody browsing vibe",
+      lat: 43.6534, lng: -79.4249,
+      color: '#7b68ee'
+    },
+    {
+      name: "Type Books",
+      addr: "883 Queen St W",
+      note: "Classic indie bookshop near Trinity Bellwoods",
+      lat: 43.6422, lng: -79.4178,
+      color: '#7b68ee'
+    },
+    {
+      name: "The Occult Shop",
+      addr: "Toronto",
+      note: "Long-running occult staple · books, candles, herbs, stones",
+      lat: 43.6540, lng: -79.3970,
+      color: '#7b68ee'
+    },
+    {
+      name: "The Hermit's Lamp",
+      addr: "1020 Bloor St W",
+      note: "Tarot-heavy · decks, candles, classes",
+      lat: 43.6622, lng: -79.4341,
+      color: '#7b68ee'
+    }
+  ];
+
+  const art = [
+    {
+      name: "Art Gallery of Ontario",
+      addr: "317 Dundas St W",
+      note: "Major collection · Frank Gehry redesign · worth a few hours",
+      lat: 43.6536, lng: -79.3924,
+      color: '#4a9eca'
+    },
+    {
+      name: "The Power Plant",
+      addr: "231 Queens Quay W",
+      note: "Contemporary/avant-garde · usually free · waterfront",
+      lat: 43.6389, lng: -79.3816,
+      color: '#4a9eca'
+    },
+    {
+      name: "Distillery District",
+      addr: "55 Mill St",
+      note: "Pedestrian historic district · galleries, brick alleys, patios",
+      lat: 43.6503, lng: -79.3593,
+      color: '#4a9eca'
+    }
+  ];
+
+  [...venues, ...food, ...shops, ...art].forEach(loc => {
+    L.marker([loc.lat, loc.lng], { icon: makeIcon(loc.color) })
+      .addTo(map)
+      .bindPopup(`
+        <div style="font-family: -apple-system, sans-serif; min-width: 160px;">
+          <strong style="font-size: 0.9rem; display:block; margin-bottom:2px;">${loc.name}</strong>
+          <span style="font-size: 0.75rem; color: #888; display:block; margin-bottom:4px;">${loc.addr}</span>
+          <span style="font-size: 0.78rem; color: #555;">${loc.note}</span>
+          <br><a href="https://maps.google.com/?q=${encodeURIComponent(loc.name + ' Toronto')}" target="_blank" style="font-size:0.72rem; color:#c9a84c; margin-top:4px; display:inline-block;">Open in Google Maps →</a>
+        </div>
+      `, { maxWidth: 220 });
+  });
+</script>
+</body>
+</html>
